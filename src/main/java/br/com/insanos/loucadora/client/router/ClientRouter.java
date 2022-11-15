@@ -22,10 +22,12 @@ public class ClientRouter {
 
     @Bean
     public RouterFunction<ServerResponse> handler() {
-        return route().path("/", builder ->
+        return route().path("/client", builder ->
                         builder.nest(accept(APPLICATION_JSON), routerBuilder -> routerBuilder
-                                .GET("{name}", handler::greetings)
-                                .POST("/client", handler::createClient)))
+                                //.GET("{name}", handler::greetings)
+                                .GET("{idClient}", handler::getClient)
+                                .POST(handler::createClient)
+                                .DELETE("{idClient}", handler::deleteClient)))
                 .build();
     }
 

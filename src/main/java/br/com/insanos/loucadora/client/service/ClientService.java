@@ -23,9 +23,23 @@ public class ClientService {
                 .documentNumber(client.getDocumentNumber())
                 .name(client.getName())
                 .password(client.getPassword())
+                .activeAccount(true)
                 .createdAt(LocalDateTime.now())
                 .build();
 
         return repository.save(document);
+    }
+
+    public Mono<ClientDocument> getClient(final String idClient) {
+        return repository.findByDocumentNumberAndActiveAccountIsTrue(idClient);
+    }
+
+    public Mono<ClientDocument> inactivateAccount(final String idClient) {
+        return repository.findByDocumentNumberAndActiveAccountIsTrue(idClient)
+                .flatMap(account -> {
+                    account.setActiveAccount(false);
+                    return repository.save(account);
+                });
+
     }
 }

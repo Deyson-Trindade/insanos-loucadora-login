@@ -21,5 +21,7 @@ public class ClientDocument {
     private String name;
     private String documentNumber;
     private String password;
+    private boolean activeAccount;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

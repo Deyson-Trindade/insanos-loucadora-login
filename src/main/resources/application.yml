@@ -1,0 +1,10 @@
+spring:
+    data:
+        mongodb:
+            username: admin
+            password: admin
+            database: reactiveSpringMongo
+            authentication-database: admin
+            port: 27017
+            host: localhost
+

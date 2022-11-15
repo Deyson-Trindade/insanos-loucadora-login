@@ -22,7 +22,7 @@ public class ClientHandler {
     public Mono<ServerResponse> greetings(final ServerRequest request) {
         var name = request.pathVariable("name");
         return ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.TEXT_PLAIN)
                 .bodyValue("Hello " + name);
     }
 
@@ -39,6 +39,22 @@ public class ClientHandler {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Mono<ServerResponse> getClient(ServerRequest request) {
+        var idClient = request.pathVariable("idClient");
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(service.getClient(idClient), ClientDocument.class)
+                .switchIfEmpty(ServerResponse.notFound().build());
+    }
+
+    public Mono<ServerResponse> deleteClient(ServerRequest request) {
+        var idClient = request.pathVariable("idClient");
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(service.inactivateAccount(idClient), ClientDocument.class)
+                .switchIfEmpty(ServerResponse.notFound().build());
     }
 }
 

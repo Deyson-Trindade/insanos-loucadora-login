@@ -1,10 +1,17 @@
 spring:
-    data:
-        mongodb:
-            username: admin
-            password: admin
-            database: reactiveSpringMongo
-            authentication-database: admin
-            port: 27017
-            host: localhost
+  data:
+    mongodb:
+      username: admin
+      password: admin
+      database: reactiveSpringMongo
+      authentication-database: admin
+      port: 27017
+      host: localhost
 
+springdoc:
+  webjars:
+    prefix: /api-doc
+  api-docs:
+    path: /swagger-doc/v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html

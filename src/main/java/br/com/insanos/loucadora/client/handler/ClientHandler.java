@@ -4,7 +4,6 @@ import br.com.insanos.loucadora.client.document.ClientDocument;
 import br.com.insanos.loucadora.client.request.ClientRequest;
 import br.com.insanos.loucadora.client.service.ClientService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -18,13 +17,6 @@ import java.net.URISyntaxException;
 public class ClientHandler {
 
     private final ClientService service;
-
-    public Mono<ServerResponse> greetings(final ServerRequest request) {
-        var name = request.pathVariable("name");
-        return ServerResponse.ok()
-                .contentType(MediaType.TEXT_PLAIN)
-                .bodyValue("Hello " + name);
-    }
 
     public Mono<ServerResponse> createClient(final ServerRequest request) {
         return request.bodyToMono(ClientRequest.class)
@@ -43,17 +35,15 @@ public class ClientHandler {
 
     public Mono<ServerResponse> getClient(ServerRequest request) {
         var idClient = request.pathVariable("idClient");
-        return ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(service.getClient(idClient), ClientDocument.class)
+        return service.getClient(idClient)
+                .flatMap(client -> ServerResponse.ok().bodyValue(client))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> deleteClient(ServerRequest request) {
         var idClient = request.pathVariable("idClient");
-        return ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(service.inactivateAccount(idClient), ClientDocument.class)
+        return service.inactivateAccount(idClient)
+                .flatMap(response -> ServerResponse.ok().bodyValue(response))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 }

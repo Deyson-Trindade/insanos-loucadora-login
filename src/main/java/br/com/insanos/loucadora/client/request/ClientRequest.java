@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClientRequest {
+public class ClientRequest implements Client {
     private String name;
     private String documentNumber;
     private String password;

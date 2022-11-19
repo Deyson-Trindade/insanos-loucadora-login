@@ -1,8 +1,9 @@
 package br.com.insanos.loucadora.client.service;
 
+import br.com.caelum.stella.validation.CPFValidator;
 import br.com.insanos.loucadora.client.document.ClientDocument;
 import br.com.insanos.loucadora.client.repository.ClientRepository;
-import br.com.insanos.loucadora.client.request.ClientRequest;
+import br.com.insanos.loucadora.client.request.Client;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -16,8 +17,10 @@ public class ClientService {
 
     private final ClientRepository repository;
 
-    public Mono<ClientDocument> createClient(final ClientRequest client) {
+    private final CPFValidator cpfValidator;
 
+    public Mono<ClientDocument> createClient(final Client client) {
+        cpfValidator.assertValid(client.getDocumentNumber());
         var document = ClientDocument.builder()
                 .id(String.valueOf(UUID.randomUUID()))
                 .documentNumber(client.getDocumentNumber())
@@ -38,6 +41,7 @@ public class ClientService {
         return repository.findByDocumentNumberAndActiveAccountIsTrue(idClient)
                 .flatMap(account -> {
                     account.setActiveAccount(false);
+                    account.setUpdatedAt(LocalDateTime.now());
                     return repository.save(account);
                 });
 

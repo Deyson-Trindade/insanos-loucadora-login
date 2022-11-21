@@ -15,3 +15,6 @@ springdoc:
     path: /swagger-doc/v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
+
+encrypt:
+  key: 6065b73a-f0b7-4b61-a845-94fdf23de233

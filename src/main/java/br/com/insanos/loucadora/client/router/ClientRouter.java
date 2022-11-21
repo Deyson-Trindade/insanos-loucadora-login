@@ -44,6 +44,7 @@ public class ClientRouter {
         return route()
                 .POST("/client", handler::createClient)
                 .GET("/client/{idClient}", handler::getClient)
+                .POST("/client/auth", handler::authenticate)
                 .DELETE("/client/{idClient}", handler::deleteClient)
                 .build();
     }

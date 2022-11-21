@@ -46,5 +46,12 @@ public class ClientHandler {
                 .flatMap(response -> ServerResponse.ok().bodyValue(response))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
+
+    public Mono<ServerResponse> authenticate(ServerRequest request) {
+        return request.bodyToMono(ClientRequest.class)
+                .flatMap(service::verifyClientAuthenticy)
+                .flatMap(response -> ServerResponse.ok().bodyValue(response))
+                .switchIfEmpty(ServerResponse.ok().bodyValue(false));
+    }
 }
 

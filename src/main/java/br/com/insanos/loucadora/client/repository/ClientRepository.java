@@ -6,4 +6,5 @@ import reactor.core.publisher.Mono;
 
 public interface ClientRepository extends ReactiveMongoRepository<ClientDocument, String> {
     Mono<ClientDocument> findByDocumentNumberAndActiveAccountIsTrue(String idClient);
+    Mono<ClientDocument> findByDocumentNumberAndPasswordAndActiveAccountIsTrue(String idClient, String password);
 }

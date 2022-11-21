@@ -27,6 +27,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 
 	implementation 'br.com.caelum.stella:caelum-stella-core:2.1.5'
+	implementation 'com.google.guava:guava:31.1-jre'
 
 	implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.6.12'
 	implementation 'org.springdoc:springdoc-openapi-webflux-core:1.6.12'

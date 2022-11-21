@@ -7,7 +7,6 @@ import br.com.insanos.loucadora.client.service.ClientService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
@@ -18,7 +17,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
 
 import java.time.LocalDateTime;
 
@@ -38,13 +36,14 @@ class ClientRouterTest {
     @MockBean
     private ClientService service;
 
+
     @BeforeEach
     public void setUp() {
         webTestClient = WebTestClient.bindToApplicationContext(context).build();
     }
 
     @Test
-    void whenCallingRouterGetClient_then_ShouldMatchTheInformation() {
+    void whenCallingRouterGetClient_thenMatchTheInformation() {
         final var document = ClientDocument.builder()
                 .id(CLIENT_ID)
                 .name(CLIENT_NAME)
@@ -72,7 +71,7 @@ class ClientRouterTest {
     }
 
     @Test
-    void whenCallingRouterCreateClient_then_ShouldCreateAndReturnANewClient() {
+    void whenCallingRouterCreateClient_thenCreateAndReturnANewClient() {
         final var clientRequest = ClientRequest.builder()
                 .documentNumber(DOCUMENT_NUMBER)
                 .name(CLIENT_NAME)
@@ -80,8 +79,6 @@ class ClientRouterTest {
                 .build();
         final var monoClientRequest = Mono.just(clientRequest);
 
-        //StepVerifier.create(monoClientRequest).
-        //para testar mono e flux
         final var clientDocument = ClientDocument.builder()
                 .id(CLIENT_ID)
                 .name(CLIENT_NAME)
@@ -108,7 +105,7 @@ class ClientRouterTest {
     }
 
     @Test
-    void whenCallingRouterDeleteClient_then_ShouldInactivateAccount() {
+    void whenCallingRouterDeleteClient_thenInactivateAccount() {
         final var clientDocument = ClientDocument.builder()
                 .id(CLIENT_ID)
                 .name(CLIENT_NAME)
@@ -117,7 +114,6 @@ class ClientRouterTest {
                 .activeAccount(false)
                 .createdAt(LocalDateTime.now())
                 .build();
-
         final var monoClientDocument = Mono.just(clientDocument);
 
         Mockito.doReturn(monoClientDocument)
@@ -132,4 +128,27 @@ class ClientRouterTest {
                 .value(clientResponse -> assertThat(clientResponse.isActiveAccount()).isFalse());
     }
 
+    @Test
+    void whenCallingRouterAuthenticate_thenReturnTrue() {
+        final var clientRequest = ClientRequest.builder()
+                .documentNumber(DOCUMENT_NUMBER)
+                .name(CLIENT_NAME)
+                .password(PASSWORD)
+                .build();
+        final var monoClientRequest = Mono.just(clientRequest);
+
+        Mockito.doReturn(Mono.just(true))
+                .when(service)
+                .verifyClientAuthenticy(Mockito.any());
+
+        webTestClient.post()
+                .uri("/client/auth")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(monoClientRequest, ClientRequest.class)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Boolean.class)
+                .value(clientResponse -> assertThat(clientResponse.booleanValue()).isTrue());
+    }
 }
